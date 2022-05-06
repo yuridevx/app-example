@@ -1,0 +1,27 @@
+syntax = "proto3";
+option go_package = "github.com/yuridevx/app-example/api/v1/schedule";
+import "google/api/annotations.proto";
+
+service Schedule {
+  rpc NewJob(JobRequest) returns (JobResponse) {
+    option (google.api.http) = {
+      post: "/v1/job"
+      body: "*"
+    };
+  }
+}
+
+message JobOptions {
+  string  arg1 = 1;
+  string  arg2 = 2;
+}
+
+message JobRequest {
+  string id = 1;
+  string delay = 2;
+  JobOptions options = 3;
+}
+
+message JobResponse {
+}
+
