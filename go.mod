@@ -14,10 +14,10 @@ require (
 	github.com/pyroscope-io/client v0.2.3
 	github.com/spf13/cobra v1.4.0
 	github.com/spf13/viper v1.11.0
-	github.com/yuridevx/app v0.0.20
+	github.com/yuridevx/app v0.0.32
 	github.com/yuridevx/app-example/api v0.0.0-00010101000000-000000000000
-	github.com/yuridevx/app/apprelic v0.0.20
-	github.com/yuridevx/app/appzap v0.0.20
+	github.com/yuridevx/app/apprelic v0.0.32
+	github.com/yuridevx/app/appzap v0.0.32
 	go.uber.org/atomic v1.9.0
 	go.uber.org/multierr v1.8.0
 	go.uber.org/zap v1.21.0

@@ -26,15 +26,15 @@ func InitApp() (*App, error) {
 	application := infra.NewRelic(relic, logger)
 	pyroscope := &configConfig.Pyroscope
 	profiler := infra.NewPyroscope(logger, pyroscope)
-	appBuilder := infra.NewApp(logger, application, profiler)
+	builder := infra.NewApp(logger, application, profiler)
 	health := infra.NewHealth()
 	clock := infra.NewClock(configConfig)
 	runnerRunner := runner.NewRunner()
-	controller := schedule.NewController(appBuilder, clock, runnerRunner)
-	grpc := server.NewGrpc(configConfig, appBuilder, application, controller)
-	gateway := server.NewGateway(controller, configConfig, application, appBuilder)
+	controller := schedule.NewController(builder, clock, runnerRunner)
+	grpc := server.NewGrpc(configConfig, builder, application, controller)
+	gateway := server.NewGateway(controller, configConfig, application, builder)
 	app := &App{
-		Builder: appBuilder,
+		Builder: builder,
 		Logger:  logger,
 		Health:  health,
 		Grpc:    grpc,
@@ -46,7 +46,7 @@ func InitApp() (*App, error) {
 // app.go:
 
 type App struct {
-	Builder app.AppBuilder
+	Builder app.Builder
 	Logger  *zap.Logger
 	Health  domain.HealthService
 	// Commenting following field will prevent component from running

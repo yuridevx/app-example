@@ -22,6 +22,7 @@ func NewRelic(
 		func(c *newrelic.Config) {
 			c.AppName = config.AppName
 			c.License = config.License
+			c.Enabled = config.Enabled
 		},
 		nrzap.ConfigLogger(logger),
 	)

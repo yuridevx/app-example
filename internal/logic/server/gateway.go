@@ -53,7 +53,7 @@ func NewGateway(
 	scheduleServer schedule.ScheduleServer,
 	config *config.Config,
 	nr *newrelic.Application,
-	ap app.AppBuilder,
+	ap app.Builder,
 ) *Gateway {
 	g := &Gateway{
 		config: config,

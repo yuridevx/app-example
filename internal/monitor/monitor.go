@@ -50,7 +50,7 @@ func (m *Monitor) Ready(writer http.ResponseWriter, request *http.Request) {
 
 func NewMonitor(
 	logger zap.Logger,
-	ap app.AppBuilder,
+	ap app.Builder,
 	config *config.Config,
 	health domain.HealthService,
 ) *Monitor {

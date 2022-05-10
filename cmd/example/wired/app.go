@@ -15,7 +15,7 @@ import (
 )
 
 type App struct {
-	Builder app.AppBuilder
+	Builder app.Builder
 	Logger  *zap.Logger
 	Health  domain.HealthService
 	// Commenting following field will prevent component from running

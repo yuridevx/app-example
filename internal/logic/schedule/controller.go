@@ -5,6 +5,7 @@ import (
 	"github.com/yuridevx/app"
 	"github.com/yuridevx/app-example/api/v1/schedule"
 	"github.com/yuridevx/app-example/internal/domain"
+	"github.com/yuridevx/app/appch"
 	"github.com/yuridevx/app/apperr"
 	"github.com/yuridevx/app/apptrace"
 	"go.uber.org/multierr"
@@ -92,7 +93,7 @@ func (c *Controller) Put(ctx context.Context, req *schedule.JobRequest) error {
 var _ schedule.ScheduleServer = (*Controller)(nil)
 
 func NewController(
-	ap app.AppBuilder,
+	ap app.Builder,
 	clock domain.Clock,
 	runner domain.Runner,
 ) *Controller {
@@ -107,7 +108,7 @@ func NewController(
 	// because Compete Consume / Compete Period / Compete guarantees that
 	// all functions will be executed on the same goroutine.
 	ap.C(c).
-		CConsume(c.putCh, c.Put).
+		CConsume(appch.ToInterfaceChan(c.putCh), c.Put).
 		CPeriod(time.Second*10, c.ScheduleTick).
 		CPeriod(time.Second*5, c.RandomCleanup)
 

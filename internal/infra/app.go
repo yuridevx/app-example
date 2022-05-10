@@ -8,7 +8,6 @@ import (
 	"github.com/yuridevx/app/apprelic"
 	"github.com/yuridevx/app/apptrace"
 	"github.com/yuridevx/app/appzap"
-	"github.com/yuridevx/app/extension"
 	"github.com/yuridevx/app/options"
 	"go.uber.org/zap"
 	"strings"
@@ -19,22 +18,24 @@ func NewApp(
 	logger *zap.Logger,
 	nr *newrelic.Application,
 	pyro *pyroscope.Profiler,
-) app.AppBuilder {
-	var middleware = []extension.Middleware{
+) app.Builder {
+	var middleware = []options.Middleware{
 		apptrace.NewTraceMiddleware(
+			nil,
 			nil,
 		),
 		appzap.ZapMiddleware(
 			logger.WithOptions(zap.WithCaller(false)),
-			func(trace *apptrace.Trace, callType extension.CallType, time appzap.LogTime) (bool, []zap.Field) {
+			func(trace *apptrace.Trace, call options.Call, time appzap.LogTime) (bool, []zap.Field) {
+				callType := call.GetCallType()
 				fields := []zap.Field{
 					zap.String("call", strings.Replace(string(callType), "Call", "", -1)),
 				}
-				if time == appzap.LogBefore && (callType == extension.CallPBlocking ||
-					callType == extension.CallStart) {
+				if time == appzap.LogBefore && (callType == options.CallPBlocking ||
+					callType == options.CallStart) {
 					return true, fields
 				}
-				if time == appzap.LogAfter && (callType == extension.CallShutdown) {
+				if time == appzap.LogAfter && (callType == options.CallShutdown) {
 					return true, fields
 				}
 				return trace.GetLog(), fields
@@ -43,10 +44,13 @@ func NewApp(
 		appzap.LogMeMiddleware,
 	}
 	if nr != nil {
-		middleware = append(middleware, apprelic.NewNewRelicMiddleware(nr))
+		middleware = append(middleware,
+			apprelic.NewRelicTransactionMiddleware(nr),
+			apprelic.NewRelicTraceMiddleware(),
+		)
 	}
-	a := app.NewBuilder(options.ApplicationOptions{
-		GlobalMiddleware: middleware,
+	a := app.NewBuilder(func(o *options.ApplicationOptions) {
+		o.Middleware = middleware
 	})
 	a.OnShutdown(func(ctx context.Context) {
 		if pyro != nil {

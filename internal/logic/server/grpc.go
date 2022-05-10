@@ -42,7 +42,7 @@ func (s *Grpc) ShutdownGrpc() {
 
 func NewGrpc(
 	conf *config.Config,
-	ap app.AppBuilder,
+	ap app.Builder,
 	nr *newrelic.Application,
 	scheduleServer schedule.ScheduleServer,
 ) *Grpc {

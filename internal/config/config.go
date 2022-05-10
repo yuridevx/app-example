@@ -7,6 +7,7 @@ import (
 type Relic struct {
 	License string
 	AppName string
+	Enabled bool
 }
 
 type Pyroscope struct {
